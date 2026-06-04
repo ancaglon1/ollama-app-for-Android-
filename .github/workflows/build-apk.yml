@@ -47,9 +47,6 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
 
-      - name: Upgrade dependencies (fix v1 embedding API removal)
-        run: flutter pub upgrade
-
       - name: Build release APK
         run: flutter build apk --release
 
