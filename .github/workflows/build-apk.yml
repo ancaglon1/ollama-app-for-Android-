@@ -1,0 +1,57 @@
+name: Build Release APK
+
+on:
+  workflow_dispatch:  # manual trigger
+  push:
+    branches: [main, master, build-apk]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+          channel: 'stable'
+          cache: true
+
+      - name: Create debug keystore for signing
+        run: |
+          keytool -genkey -v \
+            -keystore android/debug-keystore.jks \
+            -alias debug \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass android \
+            -keypass android \
+            -dname "CN=Debug, OU=Dev, O=OllamaApp, L=Unknown, ST=Unknown, C=US"
+
+      - name: Create key.properties
+        run: |
+          echo "storeFile=debug-keystore.jks" > android/key.properties
+          echo "storePassword=android" >> android/key.properties
+          echo "keyAlias=debug" >> android/key.properties
+          echo "keyPassword=android" >> android/key.properties
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ollama-app-release
+          path: build/app/outputs/apk/release/app-release.apk
