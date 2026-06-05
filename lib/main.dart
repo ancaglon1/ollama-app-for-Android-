@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -915,7 +916,8 @@ class _MainAppState extends State<MainApp> {
                                   if (uri.isAbsolute) {
                                     if (uri.scheme == 'data') {
                                       return Image.memory(
-                                          uri.data?.contentAsBytes() ?? [],
+                                          Uint8List.fromList(
+                                              uri.data?.contentAsBytes() ?? []),
                                           errorBuilder: (_, __, ___) =>
                                               const Icon(Icons.broken_image));
                                     }
