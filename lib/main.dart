@@ -913,64 +913,61 @@ class _MainAppState extends State<MainApp> {
                                 ),
                                 imageBuilder: (uri, title, alt) {
                                   if (uri.isAbsolute) {
-                                    return Image.network(uri.toString(),
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                      return InkWell(
-                                          onTap: () {
-                                            HapticFeedback.selectionClick();
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                                    content: Text(
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .notAValidImage),
-                                                    showCloseIcon: true));
-                                          },
-                                          child: Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  color: Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.light
-                                                      ? Colors.white
-                                                      : Colors.black),
-                                              padding: const EdgeInsets.only(
-                                                  left: 100,
-                                                  right: 100,
-                                                  top: 32),
-                                              child: const Image(
-                                                  image: AssetImage(
-                                                      "assets/logo512error.png"))));
-                                    });
-                                  } else {
+                                    if (uri.scheme == 'data') {
+                                      return Image.memory(
+                                          base64Decode(
+                                              uri.data?.content ?? ''),
+                                          errorBuilder: (_, __, ___) =>
+                                              const Icon(Icons.broken_image));
+                                    }
                                     return InkWell(
-                                        onTap: () {
-                                          HapticFeedback.selectionClick();
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content: Text(
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .notAValidImage),
-                                                  showCloseIcon: true));
-                                        },
+                                        onTap: () => launchUrl(uri),
                                         child: Container(
+                                            padding: const EdgeInsets.all(8),
                                             decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.grey),
                                                 borderRadius:
-                                                    BorderRadius.circular(8),
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
-                                                    ? Colors.white
-                                                    : Colors.black),
-                                            padding: const EdgeInsets.only(
-                                                left: 100, right: 100, top: 32),
-                                            child: const Image(
-                                                image: AssetImage(
-                                                    "assets/logo512error.png"))));
+                                                    BorderRadius.circular(8)),
+                                            child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Icon(Icons.image,
+                                                      size: 24),
+                                                  const SizedBox(width: 8),
+                                                  Flexible(
+                                                      child: Text(
+                                                          alt ??
+                                                              uri.toString(),
+                                                          overflow: TextOverflow
+                                                              .ellipsis))
+                                                ])));
                                   }
+                                  return InkWell(
+                                      onTap: () {
+                                        HapticFeedback.selectionClick();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .notAValidImage),
+                                                showCloseIcon: true));
+                                      },
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.light
+                                                  ? Colors.white
+                                                  : Colors.black),
+                                          padding: const EdgeInsets.only(
+                                              left: 100, right: 100, top: 32),
+                                          child: const Image(
+                                              image: AssetImage(
+                                                  "assets/logo512error.png"))));
                                 },
                                 styleSheet: (p0.author == user)
                                     ? MarkdownStyleSheet(
