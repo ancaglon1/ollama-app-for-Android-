@@ -28,7 +28,7 @@ jobs:
       - name: Create debug keystore for signing
         run: |
           keytool -genkey -v \
-            -keystore android/debug-keystore.jks \
+            -keystore android/app/debug-keystore.jks \
             -alias debug \
             -keyalg RSA \
             -keysize 2048 \
