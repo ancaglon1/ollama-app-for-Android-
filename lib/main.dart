@@ -915,8 +915,7 @@ class _MainAppState extends State<MainApp> {
                                   if (uri.isAbsolute) {
                                     if (uri.scheme == 'data') {
                                       return Image.memory(
-                                          base64Decode(
-                                              uri.data?.content ?? ''),
+                                          uri.data?.contentAsBytes() ?? [],
                                           errorBuilder: (_, __, ___) =>
                                               const Icon(Icons.broken_image));
                                     }
